@@ -5,12 +5,14 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-  
-  use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
+use Doctrine\ORM\EntityManagerInterface;  // <-- ajouté
+use App\Entity\User;                      // <-- ajouté
+
 final class MoniqueController extends AbstractController
 {
-	
-	#[IsGranted('ROLE_USER')]
+    #[IsGranted('ROLE_USER')]
     #[Route('/monique', name: 'app_monique')]
     public function index(): Response
     {
@@ -19,17 +21,15 @@ final class MoniqueController extends AbstractController
         ]);
     }
 
-
-    //fonction exemple
-	#[IsGranted('ROLE_ADMIN')]
-	#[Route('/moniqueAdmin', name: 'app_monique_admin')]
+    #[IsGranted('ROLE_ADMIN')]
+    #[Route('/moniqueAdmin', name: 'app_monique_admin')]
     public function moniqueAdmin(EntityManagerInterface $entityManager): Response
     {
-		//récupération de tous les users
         $users = $entityManager->getRepository(User::class)->findAll();
-		//ce return renvoie vers template/monique/admin
-		return $this->render('monique/admin.html.twig', [
+        return $this->render('monique/admin.html.twig', [
             'users' => $users,
         ]);
     }
 }
+
+
